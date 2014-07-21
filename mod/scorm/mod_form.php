@@ -256,6 +256,14 @@ class mod_scorm_mod_form extends moodleform_mod {
         $mform->addHelpButton('auto', 'autocontinue', 'scorm');
         $mform->setDefault('auto', $cfgscorm->auto);
 
+        // Password Field.
+        $mform->addElement('header', 'requirepassword', get_string('requirepassword', 'scorm'));
+
+        // Require password to access the scorm lesson.
+        $mform->addElement('passwordunmask', 'scormpassword', get_string('desiredpassword', 'scorm'));
+        $mform->setType('scormpassword', PARAM_TEXT);
+        $mform->addHelpButton('scormpassword', 'desiredpassword', 'scorm');
+
         // Hidden Settings.
         $mform->addElement('hidden', 'datadir', null);
         $mform->setType('datadir', PARAM_RAW);
