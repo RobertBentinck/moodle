@@ -1292,7 +1292,7 @@ function scorm_debugging($scorm) {
     $identifier = $USER->username.':'.$scorm->name;
     $test = $cfgscorm->apidebugmask;
     // Check the regex is only a short list of safe characters.
-    if (!preg_match('/^[\w\s\*\.\?\+\:\_\\\]+$/', $test)) {
+    if (!preg_match("/^[\w\s\*\.\?\+\:\_\\\]+$/", $test)) {
         return false;
     }
     $res = false;

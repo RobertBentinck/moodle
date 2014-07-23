@@ -102,9 +102,11 @@ function scorm_add_instance($scorm, $mform=null) {
     if (empty($scorm->timeclose)) {
         $scorm->timeclose = 0;
     }
+
     $cmid       = $scorm->coursemodule;
     $cmidnumber = $scorm->cmidnumber;
     $courseid   = $scorm->course;
+    // $password   = $scorm->scormpassword;
 
     $context = context_module::instance($cmid);
 

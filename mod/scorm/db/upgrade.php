@@ -276,6 +276,22 @@ function xmldb_scorm_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2014040200, 'scorm');
     }
 
+    if ($oldversion < 2014072200) {
+
+        // Define field password to be added to scorm.
+        $table = new xmldb_table('scorm');
+        $field = new xmldb_field('password', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'displayactivityname');
+
+        // Conditionally launch add field password.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Scorm savepoint reached.
+        upgrade_mod_savepoint(true, 2014072200, 'scorm');
+    }
+
+
     // Moodle v2.7.0 release upgrade line.
     // Put any upgrade step following this.
 
