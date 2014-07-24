@@ -159,6 +159,7 @@ if (!empty($add)) {
     $data->completionexpected = $cm->completionexpected;
     $data->completionusegrade = is_null($cm->completiongradeitemnumber) ? 0 : 1;
     $data->showdescription    = $cm->showdescription;
+
     if (!empty($CFG->enableavailability)) {
         $data->availabilityconditionsjson = $cm->availability;
     }
@@ -254,6 +255,7 @@ $mformclassname = 'mod_'.$module->name.'_mod_form';
 $mform = new $mformclassname($data, $cw->section, $cm, $course);
 $mform->set_data($data);
 
+
 if ($mform->is_cancelled()) {
     if ($return && !empty($cm->id)) {
         redirect("$CFG->wwwroot/mod/$module->name/view.php?id=$cm->id");
@@ -263,6 +265,14 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
 
     if (!empty($fromform->update)) {
+
+        //salt the updated password if its not empty / not set
+        if ($fromform->password == "" || empty($fromform->password)) {
+            $fromform->password = null;
+        } else {
+            $fromform->password = password_hash($fromform->password, PASSWORD_DEFAULT);
+        }
+
         list($cm, $fromform) = update_moduleinfo($cm, $fromform, $course, $mform);
     } else if (!empty($fromform->add)) {
         $fromform = add_moduleinfo($fromform, $course, $mform);

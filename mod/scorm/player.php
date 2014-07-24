@@ -27,6 +27,7 @@ $mode = optional_param('mode', 'normal', PARAM_ALPHA); // navigation mode
 $currentorg = optional_param('currentorg', '', PARAM_RAW); // selected organization
 $newattempt = optional_param('newattempt', 'off', PARAM_ALPHA); // the user request to start a new attempt.
 $displaymode = optional_param('display', '', PARAM_ALPHA);
+$passwordfromuser = optional_param('password', '', PARAM_ALPHA);
 
 if (!empty($id)) {
     if (! $cm = get_coursemodule_from_id('scorm', $id)) {
@@ -51,11 +52,8 @@ if (!empty($id)) {
 } else {
     print_error('missingparameter');
 }
-// If new attempt is being triggered set normal mode and increment attempt number.
-$attempt = scorm_get_last_attempt($scorm->id, $USER->id);
 
-// Check mode is correct and set/validate mode/attempt/newattempt (uses pass by reference).
-scorm_check_mode($scorm, $newattempt, $attempt, $USER->id, $mode);
+
 
 $url = new moodle_url('/mod/scorm/player.php', array('scoid' => $scoid, 'cm' => $cm->id));
 if ($mode !== 'normal') {
@@ -68,6 +66,15 @@ if ($newattempt !== 'off') {
     $url->param('newattempt', $newattempt);
 }
 $PAGE->set_url($url);
+
+// If new attempt is being triggered set normal mode and increment attempt number.
+$attempt = scorm_get_last_attempt($scorm->id, $USER->id);
+
+// Check mode is correct and set/validate mode/attempt/newattempt (uses pass by reference).
+scorm_check_mode($scorm, $newattempt, $attempt, $USER->id, $mode);
+
+
+
 $forcejs = get_config('scorm', 'forcejavascript');
 if (!empty($forcejs)) {
     $PAGE->add_body_class('forcejavascript');
@@ -102,6 +109,21 @@ if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', $cou
     notice(get_string("activityiscurrentlyhidden"));
     echo $OUTPUT->footer();
     die;
+}
+
+// Check SCORM password.
+// test $passwordfromuser against stored password - BUT ONLY IF !empty($scorm->password)
+if (!empty($scorm->password)) {
+    // This is a password-protected SCORM activity.
+    // Hash and salt the password we got ($userpassword) and compare it to $scorm->password.
+
+    if (password_verify($passwordfromuser, $scorm->password) != true) {
+        redirect(new moodle_url('/mod/scorm/view.php',
+            array('id' => $id)),
+            get_string('wrongpassword', 'scorm'),
+            4 //wait four seconds before redirecting
+        );
+    }
 }
 
 // Check if scorm closed.

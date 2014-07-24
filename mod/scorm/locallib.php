@@ -920,6 +920,15 @@ function scorm_view_display ($user, $scorm, $action, $cm) {
         echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'scoid', 'value' => $scorm->launch));
         echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'cm', 'value' => $cm->id));
         echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'currentorg', 'value' => $orgidentifier));
+
+        echo "<pre>";
+        var_dump($scorm->password);
+        echo "</pre>";
+
+        if (isset($scorm->password) && $scorm->password != null) {
+            echo html_writer::empty_tag('input', array('type' => 'password', 'name' => 'password'));
+        }
+
         echo html_writer::empty_tag('input', array('type' => 'submit', 'value' => get_string('enter', 'scorm')));
         echo html_writer::end_tag('form');
         echo html_writer::end_div();

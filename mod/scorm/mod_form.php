@@ -261,10 +261,10 @@ class mod_scorm_mod_form extends moodleform_mod {
 
         // Require password to access the scorm lesson.
         // Password field.
-        $mform->addElement('passwordunmask', 'scormpassword', get_string('desiredpassword', 'scorm'));
-        $mform->setType('scormpassword', PARAM_TEXT);
+        $mform->addElement('passwordunmask', 'password', get_string('desiredpassword', 'scorm'));
+        $mform->setType('password', PARAM_TEXT);
         // Password help button.
-        $mform->addHelpButton('scormpassword', 'desiredpassword', 'scorm');
+        $mform->addHelpButton('password', 'desiredpassword', 'scorm');
 
         // Hidden Settings.
         $mform->addElement('hidden', 'datadir', null);

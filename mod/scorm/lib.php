@@ -106,7 +106,7 @@ function scorm_add_instance($scorm, $mform=null) {
     $cmid       = $scorm->coursemodule;
     $cmidnumber = $scorm->cmidnumber;
     $courseid   = $scorm->course;
-    // $password   = $scorm->scormpassword;
+    $password   = $scorm->password;
 
     $context = context_module::instance($cmid);
 
@@ -119,7 +119,7 @@ function scorm_add_instance($scorm, $mform=null) {
     }
 
     $id = $DB->insert_record('scorm', $scorm);
-
+    
     // Update course module record - from now on this instance properly exists and all function may be used.
     $DB->set_field('course_modules', 'instance', $id, array('id' => $cmid));
 
@@ -151,6 +151,13 @@ function scorm_add_instance($scorm, $mform=null) {
         $record->hidetoc = SCORM_TOC_DISABLED; // TOC is useless for direct AICCURL so disable it.
     } else {
         return false;
+    }
+
+    //salt the password if its not empty / not set
+    if ($password == "" || empty($password)) {
+        $record->password = null;
+    } else {
+        $record->password = crypt($password);
     }
 
     // Save reference.
@@ -1301,6 +1308,7 @@ function scorm_dndupload_handle($uploadinfo) {
     $scorm->intro = '';
     $scorm->width = $scorm->framewidth;
     $scorm->height = $scorm->frameheight;
+    $scorm->password = null;
 
     return scorm_add_instance($scorm, null);
 }
